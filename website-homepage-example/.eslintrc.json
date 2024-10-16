@@ -1,0 +1,13 @@
+{
+  "extends": [
+    "next/core-web-vitals",
+    "@rocketseat/eslint-config/next"
+  ],
+  // disable some rules like unused-vars and no explicit any
+  "rules": {
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@next/next/no-img-element": "off"
+  }
+}
