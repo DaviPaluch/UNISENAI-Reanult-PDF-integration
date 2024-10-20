@@ -1,0 +1,91 @@
+// schema.prisma
+
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Risk {
+  id                            String                @id @default(uuid())
+  name                          String
+  typeRisk                      String
+  areaResponsibleIdentification String
+  riskEntryDate                 DateTime
+  riskEntryDateWeek             String
+  consequences                  String
+  project                       String
+  metier                        String
+  jalonAffected                 String
+  impactedJalonFuture           String
+  QualitativeAnalysis           QualitativeAnalysis[]
+  ActionPlan                    ActionPlan[]
+}
+
+enum Classification {
+  VERY_LOW
+  LOW
+  MEDIUM
+  HIGH
+  VERY_HIGH
+}
+
+enum RiskRating {
+  SUSTAINABLE
+  MODERATE
+  SEVERE
+  CRITICAL
+}
+
+enum Validation {
+  IN_TRAJECTORY
+  RESOLVED
+  AT_RISK
+  PROBLEM
+}
+
+model QualitativeAnalysis {
+  id            String         @id @default(uuid())
+  idRisk        String
+  probability   Classification
+  impact        Classification
+  riskRating    RiskRating
+  ImpactRenault String
+
+  risk Risk @relation(fields: [idRisk], references: [id])
+}
+
+model ResidualRisk {
+  id                  String         @id @default(uuid())
+  residualProbability Classification
+  residualImpact      Classification
+  residualRiskRating  RiskRating
+  actionValidation    Validation
+  riskValidation      Validation
+  resolutionDate      DateTime
+  resolutionDateWeek  String
+  riskId              String?
+}
+
+model ActionPlan {
+  id                  String   @id @default(uuid())
+  idRisk              String
+  idResidualRisk      String
+  strategy            String
+  action              String
+  pilotName           String
+  initialPlanDate     DateTime
+  initialPlanDateWeek String
+  alertDate           DateTime
+  alertDateWeek       String
+  resolutionTime      Int
+  time                Float
+  comments            String
+  isCapitalization    Boolean
+
+  risk Risk @relation(fields: [idRisk], references: [id])
+}
