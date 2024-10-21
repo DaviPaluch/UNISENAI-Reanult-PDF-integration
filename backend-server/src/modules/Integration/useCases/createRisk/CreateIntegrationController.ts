@@ -6,88 +6,21 @@ import { CreateIntegrationUseCase } from "./CreateIntegrationUseCase";
 export class CreateIntegrationController {
   async handle(req: Request, res: Response) {
 
-    const {
-      // Risk
-      name,
-      typeRisk,
-      areaResponsibleIdentification,
-      riskEntryDate, riskEntryDateWeek,
-      consequences,
-      project,
-      metier,
-      jalonAffected,
-      impactedJalonFuture,
-      // Qualitative Analysis
-      probability,
-      impact,
-      riskRating,
-      impactRenault,
-      // Action Plan
-      strategy,
-      action,
-      pilotName,
-      initialPlanDate,
-      initialPlanDateWeek,
-      alertDate,
-      alertDateWeek,
-      resolutionTime,
-      time,
-      comments,
-      isCapitalization,
-      // Residual Risk
-      residualProbability,
-      residualImpact,
-      residualRiskRating,
-      actionValidation,
-      riskValidation,
-      resolutionDate,
-      resolutionDateWeek,
-    }: ICreateIntegration = req.body;
+    const integrationBatchData: ICreateIntegration[] = req.body;
 
-    const integrationData: ICreateIntegration = {
-      // Risk
-      name,
-      typeRisk,
-      areaResponsibleIdentification,
-      riskEntryDate, riskEntryDateWeek,
-      consequences,
-      project,
-      metier,
-      jalonAffected,
-      impactedJalonFuture,
-      // Qualitative Analysis
-      probability,
-      impact,
-      riskRating,
-      impactRenault,
-      // Action Plan
-      strategy,
-      action,
-      pilotName,
-      initialPlanDate,
-      initialPlanDateWeek,
-      alertDate,
-      alertDateWeek,
-      resolutionTime,
-      time,
-      comments,
-      isCapitalization,
-      // Residual Risk
-      residualProbability,
-      residualImpact,
-      residualRiskRating,
-      actionValidation,
-      riskValidation,
-      resolutionDate,
-      resolutionDateWeek,
-    };
-
-    console.log(integrationData);
+    if (!Array.isArray(integrationBatchData)) {
+      return res.status(400).json({ error: "O corpo da requisição deve ser um array de ICreateIntegration." });
+    }
 
     const createIntegrationUseCase = new CreateIntegrationUseCase();
 
-    const interationCreated = await createIntegrationUseCase.execute({ integrationData });
+    // TODO: Add validation and Response
+    const integrationsCreated = await Promise.all(
+      integrationBatchData.map(async (integrationData) => {
+        return await createIntegrationUseCase.execute({ integrationData });
+      })
+    );
 
-    return res.status(201).json(interationCreated);
+    return res.status(201).json(integrationsCreated);
   }
 }
