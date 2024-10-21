@@ -7,7 +7,7 @@ interface ICreateResidualRiskUseCaseProps {
 }
 
 @injectable()
-export class CreateResidualRiskRepositoryUseCase {
+export class CreateResidualRiskUseCase {
   constructor(@inject("ResidualRiskRepository")
   private residualRiskRepository: IResidualRiskRepository) { }
 
