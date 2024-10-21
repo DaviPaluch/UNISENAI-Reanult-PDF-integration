@@ -16,14 +16,8 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerFile))
 
 app.use(router)
 
-app.get("/", (req, res) => {
-  console.log("hello world")
-  return res.send("hello")
-})
-
 app.use(
   (err: Error, req: Request, res: Response, next: NextFunction) => {
-    // console.log(err)
     if (err instanceof AppError) {
       return res.status(err.statusCode).json({ message: err.message })
     }

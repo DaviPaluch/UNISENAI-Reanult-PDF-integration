@@ -11,19 +11,20 @@ datasource db {
 }
 
 model Risk {
-  id                            String                @id @default(uuid())
-  name                          String
-  typeRisk                      String
-  areaResponsibleIdentification String
-  riskEntryDate                 DateTime
-  riskEntryDateWeek             String
-  consequences                  String
-  project                       String
-  metier                        String
-  jalonAffected                 String
-  impactedJalonFuture           String
-  QualitativeAnalysis           QualitativeAnalysis[]
-  ActionPlan                    ActionPlan[]
+  id                            String    @id @default(uuid())
+  name                          String?
+  typeRisk                      String?
+  areaResponsibleIdentification String?
+  riskEntryDate                 DateTime?
+  riskEntryDateWeek             String?
+  consequences                  String?
+  project                       String?
+  metier                        String?
+  jalonAffected                 String?
+  impactedJalonFuture           String?
+
+  QualitativeAnalysis QualitativeAnalysis?
+  ActionPlan          ActionPlan?
 }
 
 enum Classification {
@@ -49,43 +50,49 @@ enum Validation {
 }
 
 model QualitativeAnalysis {
-  id            String         @id @default(uuid())
-  idRisk        String
-  probability   Classification
-  impact        Classification
-  riskRating    RiskRating
-  ImpactRenault String
+  id String @id @default(uuid())
 
-  risk Risk @relation(fields: [idRisk], references: [id])
+  idRisk String @unique
+  risk   Risk   @relation(fields: [idRisk], references: [id])
+
+  probability   Classification?
+  impact        Classification?
+  riskRating    RiskRating?
+  impactRenault String?
 }
 
 model ResidualRisk {
-  id                  String         @id @default(uuid())
-  residualProbability Classification
-  residualImpact      Classification
-  residualRiskRating  RiskRating
-  actionValidation    Validation
-  riskValidation      Validation
-  resolutionDate      DateTime
-  resolutionDateWeek  String
-  riskId              String?
+  id String @id @default(uuid())
+
+  residualProbability Classification?
+  residualImpact      Classification?
+  residualRiskRating  RiskRating?
+  actionValidation    Validation?
+  riskValidation      Validation?
+  resolutionDate      DateTime?
+  resolutionDateWeek  String?
+
+  ActionPlan ActionPlan?
 }
 
 model ActionPlan {
-  id                  String   @id @default(uuid())
-  idRisk              String
-  idResidualRisk      String
-  strategy            String
-  action              String
-  pilotName           String
-  initialPlanDate     DateTime
-  initialPlanDateWeek String
-  alertDate           DateTime
-  alertDateWeek       String
-  resolutionTime      Int
-  time                Float
-  comments            String
-  isCapitalization    Boolean
+  id String @id @default(uuid())
 
-  risk Risk @relation(fields: [idRisk], references: [id])
+  idRisk String @unique
+  risk   Risk   @relation(fields: [idRisk], references: [id])
+
+  idResidualRisk String?       @unique
+  residualRisk   ResidualRisk? @relation(fields: [idResidualRisk], references: [id])
+
+  strategy            String?
+  action              String?
+  pilotName           String?
+  initialPlanDate     DateTime?
+  initialPlanDateWeek String?
+  alertDate           DateTime?
+  alertDateWeek       String?
+  resolutionTime      Int?
+  time                Float?
+  comments            String?
+  isCapitalization    Boolean?
 }
